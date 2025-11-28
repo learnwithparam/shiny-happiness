@@ -25,7 +25,7 @@ Through 7 interactive Jupyter notebooks, you'll master:
 1. **Get your API key**: [Google AI Studio](https://aistudio.google.com/apikey)
 2. **Setup & Run**:
    ```bash
-   cd ai-bootcamp-notebooks/notebooks/ai-foundation-workshop
+   cd ai-foundation-workshop
    
    # One command to setup .env, create venv, install, and run!
    make dev
@@ -248,7 +248,7 @@ Found a typo? Have a suggestion? Want to add an example?
 
 ## 📄 License
 
-These notebooks are provided for educational purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
