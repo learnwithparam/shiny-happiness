@@ -1,0 +1,29 @@
+# Python dependencies for AI Foundation Workshop
+# Install with: pip install -r requirements.txt
+
+# Core AI libraries
+litellm>=1.0.0
+python-dotenv>=1.0.0
+
+# Async support for Jupyter
+nest-asyncio>=1.5.0
+
+# Data science essentials
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+ipywidgets>=8.0.0
+
+# Utilities
+colorama>=0.4.6
+pydantic>=2.0.0
+
+# Image processing (for multimodal notebook)
+pillow>=10.0.0
+requests>=2.31.0
+
+# MCP support (for notebook 5)
+mcp>=0.1.0
+
+# LangChain for MCP native support (optional)
+langchain-google-genai>=1.0.0
+
