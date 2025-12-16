@@ -101,6 +101,14 @@ validate: ## Validate notebook format
 	done
 	@echo "$(GREEN)✓ All valid$(NC)"
 
+test: ## Run all notebooks to verify they execute correctly
+	@echo "$(BLUE)Testing all notebooks...$(NC)"
+	@for notebook in *.ipynb; do \
+		echo "Running $$notebook..."; \
+		$(UV) run jupyter nbconvert --to notebook --execute --stdout "$$notebook" > /dev/null || exit 1; \
+	done
+	@echo "$(GREEN)✓ All notebooks passed$(NC)"
+
 # ============================================================================
 # Cleanup
 # ============================================================================
