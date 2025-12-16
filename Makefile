@@ -1,5 +1,4 @@
 .PHONY: help setup install dev run test clean build up down logs shell
-
 # Default target
 .DEFAULT_GOAL := help
 
@@ -10,11 +9,9 @@ YELLOW := \033[0;33m
 RED := \033[0;31m
 NC := \033[0m
 
-# Python interpreter in venv
+# Environment
 VENV := .venv
-PYTHON := $(VENV)/bin/python
-PIP := $(VENV)/bin/pip
-JUPYTER := $(VENV)/bin/jupyter
+UV := uv
 
 help: ## Show this help
 	@echo "$(BLUE)AI Foundation Workshop$(NC)"
@@ -26,7 +23,7 @@ help: ## Show this help
 # Setup & Installation
 # ============================================================================
 
-setup: ## Initial setup (create .env and .venv)
+setup: ## Initial setup (create .env, install uv, create venv)
 	@# 1. Create .env if missing
 	@if [ ! -f .env ]; then \
 		echo "$(BLUE)Creating .env file...$(NC)"; \
@@ -37,40 +34,34 @@ setup: ## Initial setup (create .env and .venv)
 		echo "$(YELLOW).env already exists$(NC)"; \
 	fi
 	
-	@# 2. Create .venv if missing
-	@if [ ! -d "$(VENV)" ]; then \
-		echo "$(BLUE)Creating virtual environment...$(NC)"; \
-		python3 -m venv $(VENV); \
-		echo "$(GREEN)✓ Virtual environment created at $(VENV)$(NC)"; \
-		echo "$(BLUE)Upgrading pip...$(NC)"; \
-		$(PIP) install --upgrade pip; \
+	@# 2. Check for uv
+	@if ! command -v uv >/dev/null 2>&1; then \
+		echo "$(BLUE)Installing uv...$(NC)"; \
+		curl -LsSf https://astral.sh/uv/install.sh | sh; \
 	else \
-		echo "$(YELLOW)Virtual environment already exists$(NC)"; \
+		echo "$(GREEN)✓ uv is installed$(NC)"; \
 	fi
 
-install: ## Install dependencies into .venv
-	@if [ ! -d "$(VENV)" ]; then \
-		echo "$(RED)Error: Virtual environment not found. Run 'make setup' first.$(NC)"; \
-		exit 1; \
-	fi
-	@echo "$(BLUE)Installing dependencies...$(NC)"
-	$(PIP) install -r requirements.txt
+	@# 3. Create venv and sync
+	@echo "$(BLUE)Setting up virtual environment...$(NC)"
+	@$(UV) sync
+	@echo "$(GREEN)✓ Environment ready$(NC)"
+
+install: ## Install dependencies
+	@echo "$(BLUE)Syncing dependencies...$(NC)"
+	@$(UV) sync
 	@echo "$(GREEN)✓ Dependencies installed$(NC)"
 
 # ============================================================================
 # Development
 # ============================================================================
 
-dev: setup install run ## Setup, install, and run (One command to start!)
+dev: setup run ## Setup, install, and run (One command to start!)
 
 run: ## Start JupyterLab
-	@if [ ! -d "$(VENV)" ]; then \
-		echo "$(RED)Error: Virtual environment not found. Run 'make setup' first.$(NC)"; \
-		exit 1; \
-	fi
 	@echo "$(BLUE)Starting JupyterLab...$(NC)"
 	@echo "$(YELLOW)Access at: http://localhost:8888$(NC)"
-	$(JUPYTER) lab --port=8888
+	@$(UV) run jupyter lab --port=8888
 
 # ============================================================================
 # Docker
@@ -78,24 +69,24 @@ run: ## Start JupyterLab
 
 build: ## Build Docker image
 	@echo "$(BLUE)Building Docker image...$(NC)"
-	docker-compose build
+	docker compose build
 	@echo "$(GREEN)✓ Built$(NC)"
 
 up: ## Start containers
 	@echo "$(BLUE)Starting containers...$(NC)"
-	docker-compose up -d
+	docker compose up -d
 	@echo "$(GREEN)✓ Running at http://localhost:8888$(NC)"
 
 down: ## Stop containers
 	@echo "$(BLUE)Stopping containers...$(NC)"
-	docker-compose down
+	docker compose down
 	@echo "$(GREEN)✓ Stopped$(NC)"
 
 logs: ## View container logs
-	docker-compose logs -f
+	docker compose logs -f
 
 shell: ## Open shell in container
-	docker-compose exec jupyter /bin/bash
+	docker compose exec jupyter /bin/bash
 
 restart: down up ## Restart containers
 
@@ -104,21 +95,17 @@ restart: down up ## Restart containers
 # ============================================================================
 
 test: ## Run all notebooks
-	@if [ ! -d "$(VENV)" ]; then \
-		echo "$(RED)Error: Virtual environment not found. Run 'make setup' first.$(NC)"; \
-		exit 1; \
-	fi
 	@echo "$(BLUE)Testing notebooks...$(NC)"
 	@for notebook in *.ipynb; do \
 		echo "Testing $$notebook..."; \
-		$(JUPYTER) nbconvert --to notebook --execute --inplace "$$notebook" || exit 1; \
+		$(UV) run jupyter nbconvert --to notebook --execute --stdout "$$notebook" > /dev/null || exit 1; \
 	done
 	@echo "$(GREEN)✓ All tests passed$(NC)"
 
 validate: ## Validate notebook format
 	@echo "$(BLUE)Validating notebooks...$(NC)"
 	@for notebook in *.ipynb; do \
-		$(JUPYTER) nbconvert --to notebook --output /dev/null "$$notebook" || exit 1; \
+		$(UV) run jupyter nbconvert --to notebook --stdout "$$notebook" > /dev/null || exit 1; \
 	done
 	@echo "$(GREEN)✓ All valid$(NC)"
 
@@ -132,8 +119,9 @@ clean: ## Remove venv, cache, and temp files
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type d -name ".ipynb_checkpoints" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
+	@$(UV) cache clean
 	@echo "$(GREEN)✓ Cleaned$(NC)"
 
 clean-all: clean down ## Clean everything including Docker
-	docker-compose down -v
+	docker compose down -v
 	@echo "$(GREEN)✓ Everything cleaned$(NC)"

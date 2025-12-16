@@ -4,7 +4,7 @@ Welcome to the AI Foundation Workshop! This hands-on learning experience will te
 
 ## 🌟 What You'll Learn
 
-Through 7 interactive Jupyter notebooks, you'll master:
+Through 6 interactive Jupyter notebooks, you'll master:
 
 1. **💬 Text Generation** - Build conversational AI and chatbots
 2. **🖼️ Multimodal AI** - Work with images and vision models
@@ -12,12 +12,12 @@ Through 7 interactive Jupyter notebooks, you'll master:
 4. **🔧 Function Calling** - Give AI access to custom tools
 5. **🔌 Model Context Protocol (MCP)** - Connect AI to standardized services
 6. **🧠 Reasoning Models** - Solve complex problems step-by-step
-6. **🧠 Reasoning Models** - Solve complex problems step-by-step
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.10+ OR Docker
+- Python 3.10+
+- `uv` (will be installed automatically if using `make setup`)
 - API key (Google AI Studio recommended for beginners)
 
 ### Fast Track (5 minutes)
@@ -27,7 +27,7 @@ Through 7 interactive Jupyter notebooks, you'll master:
    ```bash
    cd ai-foundation-workshop
    
-   # One command to setup .env, create venv, install, and run!
+   # One command to setup .env, install dependencies, and run!
    make dev
    ```
 3. **Configure**: The first time you run it, it will create `.env`. **Edit `.env` and add your API key**, then run `make dev` again.
@@ -107,7 +107,7 @@ We provide a `Makefile` to make common tasks easy. Run `make help` to see all co
 
 ### Option 1: Local Development (Recommended)
 
-This automatically creates a virtual environment (`.venv`), installs dependencies, and starts JupyterLab.
+This automatically checks for `uv` (installing it if needed), creates a virtual environment, installs dependencies, and starts JupyterLab.
 
 ```bash
 # 1. Setup & Install
@@ -117,9 +117,9 @@ make dev
 
 **Manual Steps (if you prefer):**
 ```bash
-make setup      # Create .env and .venv
-make install    # Install dependencies into .venv
-make run        # Start JupyterLab
+make setup      # Create .env and install uv
+make install    # Install dependencies (uv sync)
+make run        # Start JupyterLab (uv run jupyter lab)
 ```
 
 ### Option 2: Docker (Isolated)

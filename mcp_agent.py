@@ -9,7 +9,14 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
-DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "gemini/gemini-2.0-flash-exp")
+DEFAULT_MODEL = os.getenv("DEFAULT_MODEL")
+
+import litellm
+import logging
+
+# --- CONFIGURATION TO SILENCE NOISE ---
+litellm.suppress_debug_info = True
+logging.getLogger("litellm").setLevel(logging.CRITICAL)
 
 server_params = StdioServerParameters(
     command="npx",
