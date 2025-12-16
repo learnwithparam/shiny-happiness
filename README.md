@@ -224,8 +224,9 @@ After completing these notebooks, you'll be able to build:
 ### Documentation
 - [LiteLLM Docs](https://docs.litellm.ai/) - Multi-provider AI library
 - [Google AI Studio](https://aistudio.google.com/) - Test Gemini models
-- [OpenAI Docs](https://platform.openai.com/docs) - GPT models
-- [Anthropic Docs](https://docs.anthropic.com/) - Claude models
+- [OpenAI Docs](https://platform.openai.com/docs/overview) - GPT models
+- [Anthropic Docs](https://platform.claude.com/docs/en/home) - Claude models
+- [OpenRouter Docs](https://openrouter.ai/docs/quickstart) - OpenRouter models
 
 ### Community
 - Share your projects and ask questions
@@ -245,10 +246,6 @@ Found a typo? Have a suggestion? Want to add an example?
 - Open an issue
 - Submit a pull request
 - Share your feedback
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

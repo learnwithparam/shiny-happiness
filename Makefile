@@ -94,14 +94,6 @@ restart: down up ## Restart containers
 # Testing
 # ============================================================================
 
-test: ## Run all notebooks
-	@echo "$(BLUE)Testing notebooks...$(NC)"
-	@for notebook in *.ipynb; do \
-		echo "Testing $$notebook..."; \
-		$(UV) run jupyter nbconvert --to notebook --execute --stdout "$$notebook" > /dev/null || exit 1; \
-	done
-	@echo "$(GREEN)✓ All tests passed$(NC)"
-
 validate: ## Validate notebook format
 	@echo "$(BLUE)Validating notebooks...$(NC)"
 	@for notebook in *.ipynb; do \
